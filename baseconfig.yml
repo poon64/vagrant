@@ -1,0 +1,30 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+      - name: Ensure that "core" application is installed
+        yum: 
+          name: "{{ item }}"
+          state: present 
+        with_items:
+          - tree
+          - git
+          - sshpass
+          - openssl-devel
+
+      - name: Check that group admin is present. Create if needed
+        group: 
+          name: admin 
+          state: present
+
+      - name: Check that user bork is present. Create if needed
+        user: 
+          name: bork 
+          shell: /bin/bash 
+          home: /home/bork 
+          groups: admin, vagrant
+          generate_ssh_key: yes 
+          ssh_key_bits: 2048 
+          password:   borkbork
+        
+...
