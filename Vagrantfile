@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "test" do |test|
     test.vm.hostname = "test"
     test.vm.provision "ansible_local" do |ansible|
-      ansible.playbook = "baseconfig.yml"
+      ansible.playbook = "bootstrap.yml"
     end
     test.vm.network "private_network", ip: "192.168.33.31"
   end
