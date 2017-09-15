@@ -31,7 +31,13 @@ git clone git@github.scania.com:sssenz/vagrant.git
 #### Create new VM with Vagrant
 Browse to to the cloned vagrant repo and run:
 ```
+##### Install all VMs
 vagrant up
+
+##### Install seperate vms
+vagrant up docker
+vagrant up perforce
+vagrant up test
 ```
 This will take some minutes the first time.
 
