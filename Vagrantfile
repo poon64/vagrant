@@ -20,4 +20,12 @@ Vagrant.configure("2") do |config|
     end
     test.vm.network "private_network", ip: "192.168.33.31"
   end
+
+  config.vm.define "docker" do |docker|
+    docker.vm.hostname = "docker"
+    docker.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "docker.yml"
+    end
+    docker.vm.network "private_network", ip: "192.168.33.11"
+  end
 end
