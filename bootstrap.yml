@@ -1,18 +1,15 @@
 ---
 - hosts: all
   become: yes
-  
-  # Define user and password variables 
+
   vars:
-        username: peter   
-        passwords: $6$9agIFtCXw6F.ngeM$vNXqEhQMGr6xU2wrIGIz9C0YU4n0ek.qWZYB6totbCxxSvN/DAK0Ml.ycPXSRxvwQcqXcJgJe8fJ9PWpo9pkn.
-        grupp: admin
-  
+      username: borkempire
+      groupname: admin
+      pw: $6$tLEwslYoG1ZIPAGN$EZy1YxQLJuLYJhX7k5iG9ZbBYvyT6f9V9xBMuXgtGDrUpNSUl3FV8uDOtY4aAHCbNisMKwsvnRWaYnJp.9Qj//
+
   tasks:
       - name: Ensure that "core" application is installed
-        yum: 
-          name: "{{ item }}"
-          state: present 
+        yum: name={{item}} state=present
         with_items:
           - tree
           - git
@@ -20,21 +17,34 @@
           - openssl-devel
           - python-pip
 
-      # Define task to add group
-      - name: Check that groups "{{ grupp }}" is present. Create if needed
+      - name: Install global python requirements
+        pip: name={{item}} state=present
+        with_items:
+          - pandas
+          - scipy
+          - scikit-learn
+          - passlib
+
+      - name: Check that group admin is present. Create if needed
         group: 
-          name: "{{ grupp }}" 
+          name: "{{ groupname }}"
           state: present
 
-      # Define task to add user    
-      - name: Check that user bork is present. Create if needed
+      - name: Create new user
         user: 
-          name: "{{ username }}" 
+          name: "{{ username }}"
           shell: /bin/bash 
-          home: /home/peter 
-          groups: "{{ grupp }}" 
+          home: "/home/{{ username }}"
+          groups: "{{ groupname }}" 
           generate_ssh_key: yes 
           ssh_key_bits: 2048 
-          password: "{{ passwords }}" 
-        
+          password:   "{{ pw }}"
+
+      - name: Copy files 
+        copy: 
+          src: data/
+          dest: "/home/{{ username }}/data/"
+          owner: "{{ username }}" 
+          group: "{{ username }}" 
+          mode: 0644 
 ...
