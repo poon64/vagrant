@@ -28,4 +28,12 @@ Vagrant.configure("2") do |config|
     end
     docker.vm.network "private_network", ip: "192.168.33.11"
   end
+
+  config.vm.define "perforce" do |perforce|
+    perforce.vm.hostname = "perforce"
+    perforce.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "perforce.yml"
+    end
+    perforce.vm.network "private_network", ip: "192.168.33.12"
+  end
 end

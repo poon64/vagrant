@@ -1,0 +1,96 @@
+---
+- hosts: all
+  become: yes
+
+  vars:
+      username: p4admin
+      groupname: p4admin
+      pw: $6$9agIFtCXw6F.ngeM$vNXqEhQMGr6xU2wrIGIz9C0YU4n0ek.qWZYB6totbCxxSvN/DAK0Ml.ycPXSRxvwQcqXcJgJe8fJ9PWpo9pkn.
+
+  tasks:
+      - name: Ensure that "core" application is installed
+        yum: 
+          name: "{{ item }}" 
+          state: present
+        with_items:
+          - tree
+          - git
+          - sshpass
+          - openssl-devel
+          - python-pip
+
+      - name: Check that group admin is present. Create if needed
+        group: 
+          name: "{{ groupname }}"
+          state: present
+
+      - name: Create new user
+        user: 
+          name: "{{ username }}"
+          shell: /bin/bash 
+          home: /p4 
+          group: "{{ groupname }}"
+          generate_ssh_key: yes 
+          ssh_key_bits: 2048 
+          password: "{{ pw }}"
+
+      - name: Make sure that /p4 dir has the correct user/group
+        file:
+          path: /p4
+          state: directory
+          recurse: yes
+          owner: "{{ username }}" 
+          group: "{{ groupname }}"
+
+      - name: Add sdp directories
+        file: 
+          path: "/{{ item }}" 
+          state: directory 
+          owner: "{{ username }}" 
+          group: "{{ groupname }}"
+          mode: 0700
+        with_items:
+          - depotdata
+          - metadata
+          - logs    
+
+      - name: Copy files 
+        copy: 
+          src: perforce/
+          dest: /p4/data
+          owner: "{{ username }}" 
+          group: "{{ username }}" 
+          mode: 0644 
+
+      - name: Allow {{ username }} group to have passwordless sudo
+        lineinfile:
+          state: present
+          regexp: '^%p4admin'
+          line: '%p4admin ALL=(ALL) NOPASSWD: ALL'
+          dest: /etc/sudoers
+      
+      - name: make install script executable
+        file: 
+          path: /p4/data/base_install.sh
+          mode: 0700
+
+      - name: make script executable
+        file: 
+          path: "{{ item }}"
+          mode: 0700
+        with_items:
+          - /p4/data/p4
+          - /p4/data/p4d
+          - /p4/data/p4broker
+          
+
+      - name: Unarchive sdp tar to /depotdata/sdp
+        unarchive:
+          src: /p4/data/sdp.Unix.2017.2.22201.tgz
+          dest: /depotdata
+          group: "{{ username }}"
+          owner: "{{ username }}" 
+          keep_newer: yes
+          remote_src: yes
+
+...
