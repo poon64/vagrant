@@ -24,7 +24,7 @@
           - scipy
           - scikit-learn
           - passlib
-
+          - java-1.8.0-openjdk.i686
       - name: Check that group admin is present. Create if needed
         group: 
           name: "{{ groupname }}"
