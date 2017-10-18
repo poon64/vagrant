@@ -1,0 +1,12 @@
+Version: 2017.1
+p4, p4d, p4broker
+
+Version 2017.2
+swarm
+
+SDP Rev. SDP/MultiArch/2017.2/22201 (2017/05/18).
+
+Download new versions
+http://ftp.perforce.com
+https://swarm.workshop.perforce.com/projects/perforce-software-sdp/files/downloads
+

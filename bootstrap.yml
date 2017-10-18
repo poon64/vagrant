@@ -3,9 +3,9 @@
   become: yes
 
   vars:
-      username: borkempire
+      username: hubert
       groupname: admin
-      pw: $6$tLEwslYoG1ZIPAGN$EZy1YxQLJuLYJhX7k5iG9ZbBYvyT6f9V9xBMuXgtGDrUpNSUl3FV8uDOtY4aAHCbNisMKwsvnRWaYnJp.9Qj//
+      pw: $6$9agIFtCXw6F.ngeM$vNXqEhQMGr6xU2wrIGIz9C0YU4n0ek.qWZYB6totbCxxSvN/DAK0Ml.ycPXSRxvwQcqXcJgJe8fJ9PWpo9pkn.
 
   tasks:
       - name: Ensure that "core" application is installed
@@ -24,7 +24,7 @@
           - scipy
           - scikit-learn
           - passlib
-
+          - java-1.8.0-openjdk.i686
       - name: Check that group admin is present. Create if needed
         group: 
           name: "{{ groupname }}"
